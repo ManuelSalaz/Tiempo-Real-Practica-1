@@ -1,0 +1,8 @@
+Ancho_Pulso_us,Ancho_Pulso_ns,Ciclos_Pulso_16MHz,Latencia_Teorica_V0_Ciclos,Exito_V0_Porc,Latencia_Teorica_V1_Ciclos,Exito_V1_Porc,Latencia_Teorica_V2_Ciclos,Exito_V2_Porc,Latencia_Teorica_V3_Ciclos,Exito_V3_Porc,Latencia_Teorica_V4_Ciclos,Exito_V4_Porc
+10.0,10000,160,99,100,53,100,20,100,10,100,8,100
+5.0,5000,80,99,68,53,100,20,100,10,100,8,100
+2.5,2500,40,99,0,53,11,20,100,10,100,8,100
+1.0,1000,16,99,0,53,0,20,28,10,100,8,100
+0.5,500,8,99,0,53,0,20,0,10,85,8,71
+0.25,250,4,99,0,53,0,20,0,10,0,8,0
+0.125,125,2,99,0,53,0,20,0,10,0,8,0

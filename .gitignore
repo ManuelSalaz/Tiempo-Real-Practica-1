@@ -1,0 +1,10 @@
+# Build artifacts
+*.hex
+*.bin
+*.elf
+*.o
+*.a
+.vscode/
+.idea/
+*.tmp
+build/

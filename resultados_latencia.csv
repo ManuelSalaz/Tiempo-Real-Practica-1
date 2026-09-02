@@ -1,0 +1,21 @@
+# =========================================================================================================
+# TABLA 1: CARACTERIZACION TEORICA DE CADA VERSION (SEGUN EDGAR BONET / ATmega328P)
+# =========================================================================================================
+Version,Estrategia_Optimizacion,Latencia_Teorica_Ciclos,Latencia_Teorica_us,Pulso_Minimo_Detectable_Teorico_us
+V0_Base,"attachInterrupt() + digitalRead()",99 ciclos,6.187 us,> 6.187 us
+V1_AccesoDirecto,"Lectura directa de registro PIND",53 ciclos,3.312 us,> 3.312 us
+V2_ISR_Propia,"ISR nativa ISR(INT0_vect) + registros EICRA/EIMSK",20 ciclos,1.250 us,> 1.250 us
+V3_Naked_ASM,"ISR_NAKED con Inline Assembly (muestreo en ciclo 7)",10 ciclos,0.625 us,> 0.625 us
+V4_GPIOR0,"Registro bit a bit GPIOR0 con instruccion sbic",8 ciclos,0.500 us,> 0.500 us
+
+# =========================================================================================================
+# TABLA 2: RESULTADOS EXPERIMENTALES OBTENIDOS EN EL LABORATORIO (ESP32 -> ARDUINO NANO)
+# =========================================================================================================
+Ancho_Pulso_us,Ancho_Pulso_ns,Ciclos_Pulso_ESP32_a_16MHz,V0_Base_Teorico_99_Ciclos,V0_Base_Exito_Real,V1_PIND_Teorico_53_Ciclos,V1_PIND_Exito_Real,V2_ISR_Teorico_20_Ciclos,V2_ISR_Exito_Real,V3_ASM_Teorico_10_Ciclos,V3_ASM_Exito_Real,V4_GPIOR0_Teorico_8_Ciclos,V4_GPIOR0_Exito_Real
+10.0,10000,160,Pasa (160 > 99),100% (100/100),Pasa (160 > 53),100% (100/100),Pasa (160 > 20),100% (100/100),Pasa (160 > 10),100% (100/100),Pasa (160 > 8),100% (100/100)
+5.0,5000,80,Falla (80 < 99),68% (68/100),Pasa (80 > 53),100% (100/100),Pasa (80 > 20),100% (100/100),Pasa (80 > 10),100% (100/100),Pasa (80 > 8),100% (100/100)
+2.5,2500,40,Falla (40 < 99),0% (0/100),Falla (40 < 53),11% (11/100),Pasa (40 > 20),100% (100/100),Pasa (40 > 10),100% (100/100),Pasa (40 > 8),100% (100/100)
+1.0,1000,16,Falla (16 < 99),0% (0/100),Falla (16 < 53),0% (0/100),Falla (16 < 20),28% (28/100),Pasa (16 > 10),100% (100/100),Pasa (16 > 8),100% (100/100)
+0.5,500,8,Falla (8 < 99),0% (0/100),Falla (8 < 53),0% (0/100),Falla (8 < 20),0% (0/100),Frontera (8 ~= 10),85% (85/100),Frontera (8 = 8),71% (71/100)
+0.25,250,4,Falla (4 < 99),0% (0/100),Falla (4 < 53),0% (0/100),Falla (4 < 20),0% (0/100),Falla (4 < 10),0% (0/100),Falla (4 < 8),0% (0/100)
+0.125,125,2,Falla (2 < 99),0% (0/100),Falla (2 < 53),0% (0/100),Falla (2 < 20),0% (0/100),Falla (2 < 10),0% (0/100),Falla (2 < 8),0% (0/100)
