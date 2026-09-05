@@ -17,9 +17,10 @@
 #define PIN_BIT    2
 #define MAX_COUNT  200
 
-volatile uint8_t count_edges;  // Conteo de flancos de señal
-volatile uint8_t count_high;   // Conteo de niveles en alto
-volatile uint8_t sampled_pin;  // Registro muestreado por la parte en ASM
+volatile uint8_t count_edges;          // Conteo de flancos de señal
+volatile uint8_t count_high;           // Conteo de niveles en alto
+volatile uint8_t sampled_pin;          // Registro muestreado por la parte en ASM
+volatile uint16_t ciclos_usados;       // Ciclos medidos con Timer1 (como en Punto 1.2)
 
 /* Parte 1: ISR Desnuda en ensamblador inline (mínima latencia de captura) */
 ISR(INT0_vect, ISR_NAKED)
@@ -36,16 +37,24 @@ ISR(INT0_vect, ISR_NAKED)
 /* Parte 2: Lógica de conteo en C gestionada con prólogo/epílogo normal */
 ISR(INT0_vect_part_2)
 {
+    uint16_t t_inicio = TCNT1;        // Captura Timer1 al entrar a parte 2
     if (count_edges < MAX_COUNT) {
         count_edges++;
         if (sampled_pin & (1 << PIN_BIT)) count_high++;
     }
+    uint16_t t_fin = TCNT1;           // Captura Timer1 al finalizar
+    ciclos_usados = t_fin - t_inicio;
 }
 
 void setup()
 {
     Serial.begin(9600);
     pinMode(2, INPUT);
+
+    // --- Configuración de Timer1 para medición de ciclos (como en Punto 1.2) ---
+    TCCR1A = 0;           // Init Timer1 en modo normal
+    TCCR1B = 0;           // Reset registro
+    TCCR1B |= B00000001;  // Prescaler = 1 (1 tick = 1 ciclo de reloj a 16 MHz = 62.5 ns)
 
     /* Configurar INT0 para cualquier flanco lógico (ISC00=1, ISC01=0) */
     EICRA = (EICRA & ~((1 << ISC01) | (1 << ISC00))) | (1 << ISC00);
@@ -66,6 +75,10 @@ void loop()
     Serial.print(" HIGH levels for ");
     Serial.print(count_edges);
     Serial.println(" edges");
+
+    /* Reporte de ciclos medidos con Timer1 (como en Punto 1.2) */
+    Serial.print("Ciclos logica C (Timer1): ");
+    Serial.println(ciclos_usados);
 
     /* Reiniciar conteos */
     count_high = 0;
